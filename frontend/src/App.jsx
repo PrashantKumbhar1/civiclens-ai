@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import ReportIssue from "./pages/ReportIssue";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminMap from "./pages/admin/AdminMap";
-
+import Home from "./pages/Home";
 /**
  * 🔐 Protected Route Wrapper
  * Redirects to admin login if JWT is missing
@@ -23,6 +22,8 @@ export default function App() {
 
         {/* 🔐 Admin Auth */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/report" element={<ReportIssue />} />
 
         {/* 🧠 Admin Dashboard */}
         <Route
