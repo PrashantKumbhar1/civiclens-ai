@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Test class */
+.test-tailwind {
+  @apply text-6xl font-extrabold text-red-600;
+}
+
+body {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.glass {
+  @apply bg-white/80 backdrop-blur shadow-lg rounded-xl;
+}
