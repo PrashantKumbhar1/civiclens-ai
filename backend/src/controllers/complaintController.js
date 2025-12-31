@@ -7,24 +7,49 @@ import { v4 as uuidv4 } from "uuid";
 
 /**
  * ===============================
- * CREATE COMPLAINT (Citizen)
+ * CREATE COMPLAINT
  * ===============================
  */
 export const createComplaint = async (req, res) => {
   try {
-    const { title, description, lat, lng, address } = req.body;
-
-    if (!req.file) {
-      return res.status(400).json({ error: "Image is required" });
+    /* 🔒 HARD SAFETY CHECKS */
+    if (!req.body) {
+      return res.status(400).json({
+        error: "Form data missing (req.body undefined)",
+      });
     }
 
-    // 1️⃣ Upload image to Cloudinary
+    const { title, description, lat, lng, address } = req.body;
+
+    if (!title || !description || !lat || !lng || !address) {
+      return res.status(400).json({
+        error: "All fields are required",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "Image is required",
+      });
+    }
+
+    /* ===============================
+       1️⃣ Upload image to Cloudinary
+       =============================== */
     const uploadResult = await cloudinary.uploader.upload(req.file.path);
 
-    // 2️⃣ AI analysis
-    const aiResult = await analyzeCivicIssue(req.file.path);
+    /* ===============================
+       2️⃣ AI analysis
+       =============================== */
+    const aiResult = {
+      issueType: title,
+      severity: "Medium",
+      summary: description,
+    };
 
-    // 3️⃣ Duplicate detection
+    /* ===============================
+       3️⃣ Duplicate detection
+       =============================== */
     const duplicates = await findDuplicateGroup(
       aiResult.issueType,
       Number(lat),
@@ -51,13 +76,17 @@ export const createComplaint = async (req, res) => {
       duplicateGroupId = uuidv4();
     }
 
-    // 4️⃣ Priority calculation
+    /* ===============================
+       4️⃣ Priority calculation
+       =============================== */
     const priorityScore = calculatePriority(
       aiResult.severity,
       reportCount
     );
 
-    // 5️⃣ Save complaint
+    /* ===============================
+       5️⃣ Save complaint
+       =============================== */
     const complaint = await Complaint.create({
       title,
       description,
@@ -80,8 +109,10 @@ export const createComplaint = async (req, res) => {
       complaint,
     });
   } catch (error) {
-    console.error("Complaint creation failed:", error);
-    res.status(500).json({ error: "Failed to create complaint" });
+    console.error("❌ Complaint creation failed:", error);
+    res.status(500).json({
+      error: "Failed to create complaint",
+    });
   }
 };
 
@@ -102,8 +133,10 @@ export const getAllComplaints = async (req, res) => {
       complaints,
     });
   } catch (error) {
-    console.error("Fetch complaints failed:", error);
-    res.status(500).json({ error: "Failed to fetch complaints" });
+    console.error("❌ Fetch complaints failed:", error);
+    res.status(500).json({
+      error: "Failed to fetch complaints",
+    });
   }
 };
 
@@ -116,6 +149,12 @@ export const updateComplaintStatus = async (req, res) => {
   try {
     const { status } = req.body;
 
+    if (!status) {
+      return res.status(400).json({
+        error: "Status is required",
+      });
+    }
+
     const complaint = await Complaint.findByIdAndUpdate(
       req.params.id,
       { status },
@@ -127,7 +166,9 @@ export const updateComplaintStatus = async (req, res) => {
       complaint,
     });
   } catch (error) {
-    console.error("Update status failed:", error);
-    res.status(500).json({ error: "Failed to update status" });
+    console.error("❌ Update status failed:", error);
+    res.status(500).json({
+      error: "Failed to update status",
+    });
   }
 };

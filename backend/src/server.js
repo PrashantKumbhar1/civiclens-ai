@@ -15,7 +15,7 @@ app.use(express.json());
 // CONNECT DATABASE
 connectDB();
 
-app.use("/api/complaints", complaintRoutes);
+app.use("/api", complaintRoutes);
 
 app.use("/api/admin", adminAuthRoutes);
 

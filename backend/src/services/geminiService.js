@@ -4,7 +4,9 @@ import fs from "fs";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const analyzeCivicIssue = async (imagePath) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-pro",
+});
 
   const imageBuffer = fs.readFileSync(imagePath);
 
