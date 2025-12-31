@@ -1,6 +1,6 @@
 import Complaint from "../models/Complaint.js";
 import cloudinary from "../config/cloudinary.js";
-import { analyzeCivicIssue } from "../services/geminiService.js";
+//import { analyzeCivicIssue } from "../services/geminiService.js";
 import { findDuplicateGroup } from "../services/duplicateDetector.js";
 import { calculatePriority } from "../utils/priorityCalculator.js";
 import { v4 as uuidv4 } from "uuid";
@@ -41,6 +41,8 @@ export const createComplaint = async (req, res) => {
     /* ===============================
        2️⃣ AI analysis
        =============================== */
+    //const aiResult = await analyzeCivicIssue(req.file.path);
+
     const aiResult = {
       issueType: title,
       severity: "Medium",
