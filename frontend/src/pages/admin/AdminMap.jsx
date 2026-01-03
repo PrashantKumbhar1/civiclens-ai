@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-window.L = L; // 👈 THIS IS THE KEY FIX
-import "leaflet.heat";
 import AdminNavbar from "../../components/AdminNavbar";
 
-// Fix Leaflet marker icons
+// Fix leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -18,72 +16,78 @@ L.Icon.Default.mergeOptions({
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
+// Marker color by severity
+const getMarkerIcon = (severity) => {
+  const color =
+    severity === "High"
+      ? "red"
+      : severity === "Medium"
+      ? "orange"
+      : "green";
+
+  return new L.Icon({
+    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+    shadowUrl:
+      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+  });
+};
+
 export default function AdminMap() {
   const [complaints, setComplaints] = useState([]);
 
-  const fetchComplaints = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/complaints");
-      setComplaints(res.data.complaints || []);
-    } catch (err) {
-      console.error("Failed to fetch complaints", err);
-    }
-  };
-
   useEffect(() => {
-    (async () => {
-      await fetchComplaints();
-    })();
+    axios
+      .get("http://localhost:5000/api/complaints")
+      .then((res) => setComplaints(res.data.complaints || []))
+      .catch(() => console.error("Failed to load complaints"));
   }, []);
 
   return (
-    <div className="relative h-screen w-full">
-      {/* 🔥 STEP 10.10 – MAP OVERLAY */}
-      <div className="absolute top-4 left-4 z-[1000] bg-white/90 backdrop-blur px-4 py-3 rounded-lg shadow">
-        <h2 className="font-bold text-lg">🔥 Priority Map</h2>
-        <p className="text-sm text-gray-600">
-          Higher priority = urgent action
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-100">
+      <AdminNavbar />
 
-    return (
-    <div className="min-h-screen">
-        <AdminNavbar />
-            <div style={{ height: "calc(100vh - 64px)" }}>
-            {/* existing map code */}
+      <div className="relative h-[calc(100vh-64px)]">
+        {/* Overlay */}
+        <div className="absolute top-4 left-4 z-[1000] bg-white/90 backdrop-blur p-4 rounded-xl shadow-lg">
+          <h2 className="text-lg font-bold">🗺️ Civic Priority Map</h2>
+          <p className="text-sm text-gray-600">
+            Color shows severity • Click markers for details
+          </p>
         </div>
-    </div>
-    );
 
-      <MapContainer
-        center={[19.076, 72.8777]} // Mumbai
-        zoom={12}
-        style={{ height: "100%", width: "100%" }}
-      >
-        <TileLayer
-          attribution="© OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <MapContainer
+          center={[19.076, 72.8777]}
+          zoom={12}
+          className="h-full w-full"
+        >
+          <TileLayer
+            attribution="© OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-        {/* 📍 Complaint Markers */}
-        {complaints.map((c) => {
-          if (!c.location?.lat || !c.location?.lng) return null;
-
-          return (
-            <Marker
-              key={c._id}
-              position={[c.location.lat, c.location.lng]}
-            >
-              <Popup>
-                <strong>{c.issueType}</strong> <br />
-                Severity: {c.severity} <br />
-                Priority: {c.priorityScore} <br />
-                Status: {c.status}
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MapContainer>
+          {complaints.map((c) =>
+            c.location?.lat && c.location?.lng ? (
+              <Marker
+                key={c._id}
+                position={[c.location.lat, c.location.lng]}
+                icon={getMarkerIcon(c.severity)}
+              >
+                <Popup>
+                  <strong>{c.title}</strong>
+                  <br />
+                  Severity: {c.severity}
+                  <br />
+                  Priority: {c.priorityScore}
+                  <br />
+                  Status: {c.status}
+                </Popup>
+              </Marker>
+            ) : null
+          )}
+        </MapContainer>
+      </div>
     </div>
   );
 }

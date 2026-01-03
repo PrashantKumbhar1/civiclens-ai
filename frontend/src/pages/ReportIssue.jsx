@@ -1,12 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
+import MapPicker from "../components/MapPicker";
 
 export default function ReportIssue() {
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
-  const [lat, setLat] = useState("");
-  const [lng, setLng] = useState("");
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   const [image, setImage] = useState(null);
 
   const [loading, setLoading] = useState(false);
@@ -14,36 +17,40 @@ export default function ReportIssue() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
+
+    if (!lat || !lng) {
+      setMessage("❌ Please select location on map");
+      return;
+    }
+
     setLoading(true);
+    setMessage("");
 
     try {
-      // ✅ MUST use FormData for file upload
       const formData = new FormData();
+      formData.append("name", name);
+      formData.append("mobile", mobile);
       formData.append("title", title);
       formData.append("description", description);
       formData.append("address", address);
       formData.append("lat", lat);
       formData.append("lng", lng);
-      formData.append("image", image); // 👈 name MUST be "image"
+      formData.append("image", image);
 
       await axios.post(
         "http://localhost:5000/api/complaints",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
       setMessage("✅ Complaint submitted successfully!");
+      setName("");
+      setMobile("");
       setTitle("");
       setDescription("");
       setAddress("");
-      setLat("");
-      setLng("");
       setImage(null);
+      setLat(null);
+      setLng(null);
     } catch (error) {
       console.error(error);
       setMessage("❌ Failed to submit complaint");
@@ -59,6 +66,24 @@ export default function ReportIssue() {
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
       >
         <h2 className="text-2xl font-bold mb-4">📝 Report Civic Issue</h2>
+
+        <input
+          type="text"
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full border p-2 rounded mb-3"
+          required
+        />
+
+        <input
+          type="tel"
+          placeholder="Mobile Number"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+          className="w-full border p-2 rounded mb-3"
+          required
+        />
 
         <input
           type="text"
@@ -86,29 +111,16 @@ export default function ReportIssue() {
           required
         />
 
-        <input
-          type="number"
-          step="any"
-          placeholder="Latitude"
-          value={lat}
-          onChange={(e) => setLat(e.target.value)}
-          className="w-full border p-2 rounded mb-3"
-          required
-        />
+        <label className="font-semibold mb-2 block">
+          📍 Select Issue Location on Map
+        </label>
 
-        <input
-          type="number"
-          step="any"
-          placeholder="Longitude"
-          value={lng}
-          onChange={(e) => setLng(e.target.value)}
-          className="w-full border p-2 rounded mb-3"
-          required
-        />
+        <MapPicker setLat={setLat} setLng={setLng} />
 
         <input
           type="file"
           accept="image/*"
+          capture="environment"
           onChange={(e) => setImage(e.target.files[0])}
           className="mb-4"
           required

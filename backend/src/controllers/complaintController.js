@@ -4,6 +4,8 @@ import cloudinary from "../config/cloudinary.js";
 import { findDuplicateGroup } from "../services/duplicateDetector.js";
 import { calculatePriority } from "../utils/priorityCalculator.js";
 import { v4 as uuidv4 } from "uuid";
+import { generateAdminSummary } from "../services/adminSummaryService.js";
+import { analyzeSeverity } from "../services/severityAnalyzer.js";
 
 /**
  * ===============================
@@ -12,84 +14,41 @@ import { v4 as uuidv4 } from "uuid";
  */
 export const createComplaint = async (req, res) => {
   try {
-    /* 🔒 HARD SAFETY CHECKS */
-    if (!req.body) {
-      return res.status(400).json({
-        error: "Form data missing (req.body undefined)",
-      });
-    }
-
-    const { title, description, lat, lng, address } = req.body;
-
-    if (!title || !description || !lat || !lng || !address) {
-      return res.status(400).json({
-        error: "All fields are required",
-      });
-    }
+    const {
+      name,
+      mobile,
+      title,
+      description,
+      address,
+      lat,
+      lng,
+    } = req.body;
 
     if (!req.file) {
-      return res.status(400).json({
-        error: "Image is required",
-      });
+      return res.status(400).json({ error: "Image is required" });
     }
 
-    /* ===============================
-       1️⃣ Upload image to Cloudinary
-       =============================== */
+    // 1️⃣ Upload image
     const uploadResult = await cloudinary.uploader.upload(req.file.path);
 
-    /* ===============================
-       2️⃣ AI analysis
-       =============================== */
-    //const aiResult = await analyzeCivicIssue(req.file.path);
-
-    const aiResult = {
-      issueType: title,
+    // 2️⃣ SAFE AI ANALYSIS (never fail)
+    let aiResult = {
+      issueType: title || "General Issue",
       severity: "Medium",
       summary: description,
     };
 
-    /* ===============================
-       3️⃣ Duplicate detection
-       =============================== */
-    const duplicates = await findDuplicateGroup(
-      aiResult.issueType,
-      Number(lat),
-      Number(lng)
-    );
-
-    let duplicateGroupId;
-    let reportCount = 1;
-
-    if (duplicates.length > 0) {
-      duplicateGroupId = duplicates[0].duplicateGroupId;
-      reportCount = duplicates.length + 1;
-
-      const updatedPriority = calculatePriority(
-        aiResult.severity,
-        reportCount
-      );
-
-      await Complaint.updateMany(
-        { duplicateGroupId },
-        { priorityScore: updatedPriority }
-      );
-    } else {
-      duplicateGroupId = uuidv4();
+    try {
+      const aiResponse = await analyzeCivicIssue(req.file.path);
+      if (aiResponse) aiResult = aiResponse;
+    } catch (aiError) {
+      console.warn("⚠️ Gemini failed, using fallback AI");
     }
 
-    /* ===============================
-       4️⃣ Priority calculation
-       =============================== */
-    const priorityScore = calculatePriority(
-      aiResult.severity,
-      reportCount
-    );
-
-    /* ===============================
-       5️⃣ Save complaint
-       =============================== */
+    // 3️⃣ Save complaint (NO AI DEPENDENCY)
     const complaint = await Complaint.create({
+      name,
+      mobile,
       title,
       description,
       imageUrl: uploadResult.secure_url,
@@ -101,20 +60,15 @@ export const createComplaint = async (req, res) => {
       issueType: aiResult.issueType,
       severity: aiResult.severity,
       aiSummary: aiResult.summary,
-      duplicateGroupId,
-      priorityScore,
+      priorityScore: 50,
       status: "Reported",
     });
 
-    res.status(201).json({
-      success: true,
-      complaint,
-    });
+    res.status(201).json({ success: true, complaint });
+
   } catch (error) {
     console.error("❌ Complaint creation failed:", error);
-    res.status(500).json({
-      error: "Failed to create complaint",
-    });
+    res.status(500).json({ error: "Failed to create complaint" });
   }
 };
 
@@ -171,6 +125,28 @@ export const updateComplaintStatus = async (req, res) => {
     console.error("❌ Update status failed:", error);
     res.status(500).json({
       error: "Failed to update status",
+    });
+  }
+};
+
+export const getAdminDashboardData = async (req, res) => {
+  try {
+    const complaints = await Complaint.find()
+      .sort({ priorityScore: -1 })
+      .limit(20);
+
+    const aiSummary = await generateAdminSummary(complaints);
+
+    res.json({
+      success: true,
+      complaints,
+      aiSummary
+    });
+  } catch (error) {
+    console.error("Dashboard data load failed:", error);
+    res.status(500).json({
+      success: false,
+      error: "Unable to load dashboard data"
     });
   }
 };

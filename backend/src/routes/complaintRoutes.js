@@ -3,6 +3,8 @@ import multer from "multer";
 import {
   createComplaint,
   getAllComplaints,
+  getAdminDashboardData,
+  updateComplaintStatus,
 } from "../controllers/complaintController.js";
 
 const router = express.Router();
@@ -17,14 +19,12 @@ const upload = multer({
   }),
 });
 
-/* CREATE COMPLAINT */
-router.post(
-  "/complaints",
-  upload.single("image"), // ⚠️ MUST MATCH frontend key
-  createComplaint
-);
+// Citizen
+router.post("/complaints", upload.single("image"), createComplaint);
 
-/* GET COMPLAINTS */
+// Admin
 router.get("/complaints", getAllComplaints);
+router.get("/admin/dashboard", getAdminDashboardData); // ✅ THIS
+router.patch("/complaints/:id", updateComplaintStatus);
 
 export default router;

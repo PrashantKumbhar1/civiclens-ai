@@ -45,7 +45,6 @@ export default function AdminNavbar() {
           </button>
         </div>
       </nav>
-      <ThemeToggle />
     </>
   );
 }

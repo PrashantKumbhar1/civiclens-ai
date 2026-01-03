@@ -10,6 +10,7 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
+import AdminNavbar from "../../components/AdminNavbar";
 
 ChartJS.register(
   ArcElement,
@@ -26,45 +27,68 @@ export default function AdminAnalytics() {
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/complaints/analytics")
-      .then((res) => setData(res.data));
+      .then((res) => setData(res.data))
+      .catch(() => console.error("Analytics load failed"));
   }, []);
 
-  if (!data) return <p>Loading analytics...</p>;
+  if (!data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading analytics...
+      </div>
+    );
+  }
 
-  const severityData = {
+  const severityChart = {
     labels: data.severityStats.map((s) => s._id),
     datasets: [
       {
-        label: "Complaints by Severity",
         data: data.severityStats.map((s) => s.count),
         backgroundColor: ["#ef4444", "#facc15", "#22c55e"],
       },
     ],
   };
 
-  const issueData = {
+  const issueChart = {
     labels: data.issueTypeStats.map((i) => i._id),
     datasets: [
       {
-        label: "Issues",
+        label: "Complaints",
         data: data.issueTypeStats.map((i) => i.count),
-        backgroundColor: "#3b82f6",
+        backgroundColor: "#6366f1",
       },
     ],
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>📊 CivicLens AI – Analytics</h1>
+    <div className="min-h-screen bg-gray-100">
+      <AdminNavbar />
 
-      <p>Total Complaints: <strong>{data.total}</strong></p>
+      <div className="p-6 max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">
+          📊 Civic Intelligence Analytics
+        </h1>
 
-      <div style={{ width: "400px" }}>
-        <Pie data={severityData} />
-      </div>
+        <p className="mb-6 text-gray-700">
+          Total Complaints:{" "}
+          <span className="font-bold">{data.total}</span>
+        </p>
 
-      <div style={{ width: "600px", marginTop: "40px" }}>
-        <Bar data={issueData} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+            <h2 className="font-semibold mb-4">
+              Severity Distribution
+            </h2>
+            <Pie data={severityChart} />
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+            <h2 className="font-semibold mb-4">
+              Issue Type Breakdown
+            </h2>
+            <Bar data={issueChart} />
+          </div>
+        </div>
       </div>
     </div>
   );

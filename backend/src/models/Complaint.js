@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const complaintSchema = new mongoose.Schema(
   {
+    name: String,
+    mobile: String,
     title: String,
     description: String,
     imageUrl: String,
