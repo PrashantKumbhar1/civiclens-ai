@@ -39,7 +39,7 @@ export default function AdminMap() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/complaints")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/complaints`)
       .then((res) => setComplaints(res.data.complaints || []))
       .catch(() => console.error("Failed to load complaints"));
   }, []);

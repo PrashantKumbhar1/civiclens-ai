@@ -38,7 +38,7 @@ export default function ReportIssue() {
       formData.append("image", image);
 
       await axios.post(
-        "http://localhost:5000/api/complaints",
+        `${import.meta.env.VITE_API_BASE_URL}/api/complaints`,
         formData
       );
 

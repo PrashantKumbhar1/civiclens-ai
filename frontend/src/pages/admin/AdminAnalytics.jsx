@@ -26,7 +26,7 @@ export default function AdminAnalytics() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/complaints/analytics")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/complaints/analytics`)
       .then((res) => setData(res.data))
       .catch(() => console.error("Analytics load failed"));
   }, []);

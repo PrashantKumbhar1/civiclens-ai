@@ -14,7 +14,7 @@ export default function AdminDashboard() {
   const fetchDashboard = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/dashboard"
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/dashboard`
       );
 
       setComplaints(res.data.complaints || []);
