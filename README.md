@@ -290,6 +290,8 @@ GEMINI_API_KEY=your_gemini_key
 
 ---
 
+## 🖥️ Local Development Setup
+
 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/PrashantKumbhar1/civiclens-ai.git
