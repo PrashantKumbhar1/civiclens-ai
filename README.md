@@ -1,195 +1,295 @@
-🚨 CivicLens AI – Smart Civic Complaint Management System
+# 🏙️ CivicLens AI  
+### AI-Powered Civic Issue Reporting & Analytics Platform
 
 CivicLens AI is a web-based intelligent civic complaint platform that helps city authorities prioritize and resolve urban issues efficiently using AI-driven analysis.
 Instead of handling complaints randomly, CivicLens AI converts raw citizen complaints into prioritized, actionable urban intelligence using image analysis, duplicate detection, and severity-based scoring.
 
-🌟 Key Highlights
+## 🚀 Live Demo
 
-📷 Image-based civic issue reporting
-🤖 AI-powered issue classification (Google Gemini)
-🔁 Duplicate complaint detection
-🔥 Priority scoring engine
-🧭 Admin dashboard with live analytics
-🗺️ Interactive city map visualization
-🔐 Secure Admin Login (JWT Authentication)
-🎨 Modern UI using Tailwind CSS
-🧠 Problem Statement
+- **Frontend (Netlify):** https://civiclens-ai1.netlify.app/ 
+- **Backend (Render):** https://civiclens-ai.onrender.com  
 
-Cities receive thousands of civic complaints daily (potholes, garbage, streetlights, etc.).
-Most systems:
+---
 
-Treat all complaints equally
+## 📌 Problem Statement
 
-Lack prioritization
+Traditional civic complaint systems suffer from:
+- Manual and slow processing
+- Duplicate complaints
+- No severity or priority classification
+- Lack of location visualization
+- No analytics for authorities
 
-Overwhelm authorities with unstructured data
+Municipal bodies need a **data-driven, AI-assisted system** to manage civic issues efficiently.
 
-👉 CivicLens AI solves this by ranking what needs urgent action first.
+---
 
-🚀 Solution Overview
+## 💡 Solution – CivicLens AI
 
-CivicLens AI uses:
+CivicLens AI solves these problems by:
+- Allowing citizens to report issues with images & map location
+- Using **Google Gemini AI** to analyze complaints
+- Automatically classifying **issue type & severity**
+- Calculating **priority scores**
+- Detecting **duplicate complaints**
+- Providing admins with **dashboards, maps, and analytics**
 
-AI image analysis to understand the issue
+---
 
-Duplicate detection to group repeated complaints
+## 🧠 Key Features
 
-Priority scoring based on severity + frequency
+### 👤 Citizen Side
+- Report civic issues easily
+- Upload or capture images
+- Select exact issue location using map
+- Provide contact details (name & mobile)
+- Clean, mobile-friendly UI
 
-Dashboards & maps for data-driven decisions
+### 🛡️ Admin Side
+- Secure admin login (JWT authentication)
+- Centralized dashboard
+- Priority-based complaint listing
+- Interactive map view
+- AI severity & summary display
+- Analytics & charts
 
-🏗️ System Architecture
-🔹 High-Level Flow
-Citizen (Web UI)
-     |
-     |  Image + Location + Description
-     ↓
-Frontend (React + Tailwind)
-     |
-     |  API Requests
-     ↓
-Backend (Node.js + Express)
-     |
-     |-- Cloudinary (Image Storage)
-     |-- Google Gemini AI (Issue Analysis)
-     |-- Duplicate Detection Engine
-     |-- Priority Scoring Logic
-     ↓
-MongoDB (Complaints + Admin Data)
-     |
-     ↓
-Admin Dashboard (JWT Protected)
+---
 
-🧩 Core Features
-👤 Citizen Module
+## 🧩 System Architecture 🏗️
 
-Report civic issues with image upload
+User Browser
+↓
+React + Vite + Tailwind (Frontend)
+↓
+Node.js + Express (Backend API)
+↓
+MongoDB Atlas (Database)
+↓
+Cloudinary (Image Storage)
+↓
+Google Gemini AI (Issue Analysis)
 
-Provide location details (lat, lng, address)
+---
 
-Simple and transparent UI
+## 📂 Project Structure
 
-🔐 Admin Module
-
-Secure admin login (JWT)
-
-Dashboard with:
-
-Severity statistics
-
-Priority ranking
-
-Complaint table
-
-Status updates:
-
-Reported → In Progress → Resolved
-
-Interactive city map view
-
-🤖 AI Intelligence
-
-Issue type detection (e.g., pothole, garbage)
-
-Severity classification (Low / Medium / High)
-
-Duplicate grouping
-
-Dynamic priority score calculation
-
-🛠️ Tech Stack
-Frontend
-
-React.js
-
-Tailwind CSS
-
-Axios
-
-React Router
-
-Leaflet (Maps)
-
-Backend
-
-Node.js
-
-Express.js
-
-MongoDB (Atlas)
-
-Mongoose
-
-JWT Authentication
-
-Multer (File Upload)
-
-AI & Cloud
-
-Google Gemini API
-
-Cloudinary (Image hosting)
-
-📂 Project Structure
-civiclens-ai/
+CIVICLENS-AI
 │
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── services/
-│   ├── utils/
-│   └── server.js
+├── backend
+│   ├── src
+│   │   ├── config
+│   │   │   └── cloudinary.js
+│   │   │
+│   │   ├── controllers
+│   │   │   ├── adminAuthController.js
+│   │   │   └── complaintController.js
+│   │   │
+│   │   ├── middleware
+│   │   │   └── upload.js
+│   │   │
+│   │   ├── models
+│   │   │   ├── Admin.js
+│   │   │   └── Complaint.js
+│   │   │
+│   │   ├── routes
+│   │   │   ├── adminAuthRoutes.js
+│   │   │   └── complaintRoutes.js
+│   │   │
+│   │   ├── scripts
+│   │   │   └── createAdmin.js
+│   │   │
+│   │   ├── services
+│   │   │   ├── geminiService.js
+│   │   │   ├── adminSummaryService.js
+│   │   │   ├── duplicateDetector.js
+│   │   │   └── severityAnalyzer.js
+│   │   │
+│   │   ├── utils
+│   │   │   └── priorityCalculator.js
+│   │   │
+│   │   └── server.js
+│   │
+│   ├── uploads
+│   ├── .env
+│   ├── package.json
+│   └── package-lock.json
 │
-├── frontend/
-│   ├── pages/
-│   │   ├── ReportIssue.jsx
-│   │   └── admin/
-│   ├── components/
-│   └── App.jsx
+├── frontend
+│   ├── public
+│   │   └── vite.svg
+│   │
+│   ├── src
+│   │   ├── assets
+│   │   │
+│   │   ├── components
+│   │   │   ├── AdminLayout.jsx
+│   │   │   ├── AdminNavbar.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── MapPicker.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── ThemeToggle.jsx
+│   │   │
+│   │   ├── pages
+│   │   │   ├── admin
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── AdminAnalytics.jsx
+│   │   │   │   ├── AdminMap.jsx
+│   │   │   │   └── AdminLogin.jsx
+│   │   │   │
+│   │   │   ├── Home.jsx
+│   │   │   └── ReportIssue.jsx
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   ├── index.css
+│   │   └── App.css
+│   │
+│   ├── dist
+│   ├── package.json
+│   └── package-lock.json
 │
-├── README.md
-└── .gitignore
+├── .gitignore
+├── package.json
+├── package-lock.json
+└── README.md
 
-🔐 Authentication Flow (Admin)
 
-Admin logs in using email & password
+### 📌 Folder Explanation
 
-Backend verifies credentials using bcrypt
+#### Backend
+- **controllers/** – Handles business logic (authentication, complaints, AI processing)
+- **models/** – MongoDB schemas (Admin, Complaint)
+- **routes/** – API routes for admin authentication and complaint handling
+- **services/** – AI services using Google Gemini for:
+  - Issue classification
+  - Severity analysis
+  - Duplicate detection
+  - City-level AI summaries
+- **middleware/** – Multer image upload handling
+- **scripts/** – One-time admin creation script
+- **server.js** – Entry point of backend API
 
-JWT token is generated
+#### Frontend
+- **components/** – Reusable UI components (Navbar, MapPicker, Admin Layout, Theme Toggle)
+- **pages/**
+  - **Home.jsx** – Landing page
+  - **ReportIssue.jsx** – Citizen complaint submission form
+  - **admin/** – Admin dashboard pages (Analytics, Map, Login)
+- **ProtectedRoute.jsx** – JWT-based route protection
+- **ThemeToggle.jsx** – Dark / Light mode support
 
-Token stored in browser (localStorage)
 
-Protected routes allow access only if token exists
+## 🛠️ Technology Stack
 
-🔌 API Endpoints
-Complaints
+### Frontend
+- React.js (Vite)
+- Tailwind CSS
+- Axios
+- React Router
+- Leaflet.js (Maps)
+- Chart.js / react-chartjs-2
 
-POST /api/complaints → Submit complaint
+### Backend
+- Node.js
+- Express.js
+- JWT Authentication
+- Multer (file uploads)
+- REST APIs
 
-GET /api/complaints → Fetch all complaints (Admin)
+### AI & Cloud
+- Google Gemini AI
+- Cloudinary
+- MongoDB Atlas
 
-PATCH /api/complaints/:id/status → Update complaint status
+### Deployment
+- Frontend: **Netlify**
+- Backend: **Render**
 
-Admin
+---
 
-POST /api/admin/login → Admin login (JWT)
+## 🧠 AI Integration (Google Gemini)
 
-🖼️ Screenshots
+### Why Gemini?
+Gemini is used where human analysis is slow or inconsistent.
 
-📌 Add screenshots after deployment or local testing
+### AI Use Cases
+- Issue type detection (Pothole, Garbage, Traffic, etc.)
+- Severity classification (High / Medium / Low)
+- AI summary generation for admins
+- Input to priority calculation
 
-Citizen – Report Issue Page
+> AI is integrated meaningfully, not forcefully.
 
-Admin Login
+---
 
-Admin Dashboard
+## 🔢 Priority & Duplicate Detection
 
-Map View
+### Duplicate Detection
+- Same issue type
+- Nearby location
+- Grouped using `duplicateGroupId`
 
-⚙️ Installation & Setup
-1️⃣ Clone Repository
+### Priority Score
+Calculated using:
+- AI severity
+- Number of duplicate reports
+- Report frequency
+
+This ensures urgent issues are handled first.
+
+---
+
+## 📊 Admin Dashboard
+
+### Dashboard
+- Total complaints
+- Severity distribution
+- Priority-sorted listing
+
+### 🗺️ Admin Map
+- Interactive map with markers
+- Popup shows:
+  - Issue type
+  - Severity
+  - Priority score
+  - Status
+
+### 📈 Analytics
+- Pie chart: complaints by severity
+- Bar chart: complaints by issue type
+- Data-driven planning for authorities
+
+---
+
+## 🔐 Security
+
+- JWT-based authentication
+- Protected admin routes
+- Environment-based secrets
+- Secure cloud storage
+- No sensitive data exposed to frontend
+
+---
+
+## ⚙️ Environment Variables
+
+### Backend (`Render` or `.env`)
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+
+CLOUDINARY_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+GEMINI_API_KEY=your_gemini_key
+
+---
+
+## 🖥️ Local Development Setup
+
+### 1️⃣ Clone Repository
+```bash
 git clone https://github.com/PrashantKumbhar1/civiclens-ai.git
 cd civiclens-ai
 
@@ -198,50 +298,95 @@ cd backend
 npm install
 npm run dev
 
-
-Create .env:
-
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-CLOUDINARY_NAME=xxxx
-CLOUDINARY_API_KEY=xxxx
-CLOUDINARY_API_SECRET=xxxx
-GEMINI_API_KEY=xxxx
+Backend runs on:
+http://localhost:5000
 
 3️⃣ Frontend Setup
 cd frontend
 npm install
 npm run dev
 
-🧪 Demo Credentials (Local)
-Admin Email: admin@civiclens.ai
-Admin Password: admin123
+Frontend runs on:
+http://localhost:5173
 
-🎯 Use Cases
 
-Smart cities & municipalities
+🚀 Deployment
 
-Urban governance platforms
+Backend (Render)
 
-Civic hackathons
+Create Web Service
+Connect GitHub repo
+Root directory: backend
 
-AI-based public service systems
+Start command:
+npm start
 
-📈 Future Enhancements
 
-Mobile app support
+Frontend (Netlify)
 
-Automatic geolocation
+Connect GitHub repo
+Base directory: frontend
 
-Advanced analytics & charts
+Build command:
+npm run build
 
-Role-based access control
+Publish directory:
+dist
 
-Citizen complaint tracking IDs
+🚧 Challenges Faced
 
-🏁 Conclusion
+File upload + AI processing
+Cloudinary misconfiguration
+Gemini API model compatibility
+Map integration with React
+Deployment environment issues
 
-CivicLens AI transforms civic complaints from chaos into clarity.
-It empowers authorities with AI-driven insights while keeping the process transparent for citizens.
 
-From random complaints → to prioritized, actionable urban intelligence.
+✅ Solutions Implemented
+
+Multer + Cloudinary integration
+Safe AI error handling
+Modular backend architecture
+Environment-based configuration
+Fallback logic for AI failures
+
+
+🔮 Future Enhancements
+
+Real-time complaint updates
+
+Mobile application
+
+Predictive analytics
+
+Authority notifications
+
+Multilingual support
+
+Role-based admin access
+
+
+🏆 Why CivicLens AI?
+✅ Real-world civic problem
+✅ AI-powered insights
+✅ Scalable cloud architecture
+✅ Modern UI/UX
+✅ Hackathon-ready innovation
+
+📄 License
+This project is developed for educational and hackathon purposes.
+
+🙏 Acknowledgements
+
+Google Gemini AI
+MongoDB Atlas
+Cloudinary
+OpenStreetMap
+React & Node.js community
+
+
+📬 Contact
+Developer: Prashant Kumbhar
+GitHub: https://github.com/PrashantKumbhar1
+
+
