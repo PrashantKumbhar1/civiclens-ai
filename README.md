@@ -275,25 +275,27 @@ This ensures urgent issues are handled first.
 
 ### Backend (`Render` or `.env`)
 PORT=5000
+
 MONGO_URI=your_mongodb_uri
+
 JWT_SECRET=your_jwt_secret
 
 CLOUDINARY_NAME=your_cloud_name
+
 CLOUDINARY_API_KEY=your_api_key
+
 CLOUDINARY_API_SECRET=your_api_secret
 
 GEMINI_API_KEY=your_gemini_key
 
 ---
 
-## 🖥️ Local Development Setup
-
-### 1️⃣ Clone Repository
+1️⃣ Clone Repository
 ```bash
 git clone https://github.com/PrashantKumbhar1/civiclens-ai.git
 cd civiclens-ai
 
-### 2️⃣ Backend Setup
+2️⃣ Backend Setup
 cd backend
 npm install
 npm run dev
@@ -301,7 +303,7 @@ npm run dev
 Backend runs on:
 http://localhost:5000
 
-### 3️⃣ Frontend Setup
+3️⃣ Frontend Setup
 cd frontend
 npm install
 npm run dev
