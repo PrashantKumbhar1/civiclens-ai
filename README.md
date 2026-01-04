@@ -293,7 +293,7 @@ GEMINI_API_KEY=your_gemini_key
 git clone https://github.com/PrashantKumbhar1/civiclens-ai.git
 cd civiclens-ai
 
-2️⃣ Backend Setup
+### 2️⃣ Backend Setup
 cd backend
 npm install
 npm run dev
@@ -301,7 +301,7 @@ npm run dev
 Backend runs on:
 http://localhost:5000
 
-3️⃣ Frontend Setup
+### 3️⃣ Frontend Setup
 cd frontend
 npm install
 npm run dev
@@ -353,20 +353,16 @@ Fallback logic for AI failures
 
 🔮 Future Enhancements
 
-Real-time complaint updates
-
-Mobile application
-
-Predictive analytics
-
-Authority notifications
-
-Multilingual support
-
-Role-based admin access
+* Real-time complaint updates
+* Mobile application
+* Predictive analytics
+* Authority notifications
+* Multilingual support
+* Role-based admin access
 
 
 🏆 Why CivicLens AI?
+
 ✅ Real-world civic problem
 ✅ AI-powered insights
 ✅ Scalable cloud architecture
